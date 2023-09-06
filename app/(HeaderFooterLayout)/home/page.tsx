@@ -1,117 +1,119 @@
 'use client'
 import * as React from "react";
 import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import IconButton from "@mui/material/IconButton";
-import SwapHorizOutlinedIcon from '@mui/icons-material/SwapHorizOutlined';
 import Paper from "@mui/material/Paper";
-import {useEffect, useState} from "react";
-import {encode_all, decode_all} from "@/services/CaesarEncrypt"
+import GitHubButton from 'react-github-btn'
+import Playground from "@/components/CaesarPassword/Playground";
 
 export default function HomePage(ctx: any) {
-  const [pw, setPw] = useState("");
-  const [supportedChars, setSupportedChars] = useState("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
-  const [plainText, setPlainText] = useState("");
-  const [encrypted, setEncrypted] = useState("");
-  const [plainTextLastEdited, setPlainTextLastEdited] = useState(0);
-  const [encryptedLastEdited, setEncryptedLastEdited] = useState(0);
-  const [plainTextErr, setPlainTextErr] = useState("");
-  const [encryptedErr, setEncryptedErr] = useState("");
-
-  // refresh form
-  useEffect(() => {
-    const encrypting = plainTextLastEdited > encryptedLastEdited
-
-    if (encrypting) {
-      try {
-        setEncrypted(encode_all(plainText, pw, supportedChars))
-        setPlainTextErr("")
-      } catch (e) {
-        console.error('{decrypt} e: ', e);
-        setPlainTextErr("Invalid input")
-      }
-    } else {
-      try {
-        setPlainText(decode_all(encrypted, pw, supportedChars))
-        setEncryptedErr("")
-      } catch (e) {
-        console.error('{decrypt} e: ', e);
-        setEncryptedErr("Invalid input")
-      }
-    }
-  }, [pw, supportedChars, plainTextLastEdited, encryptedLastEdited, plainText, encrypted])
-
   return (
     <>
-      <Typography variant="h3" textAlign="center" sx={{my: 5}}>
+      <Typography variant="h3" sx={{mt: 3}}>
         Caesar password
       </Typography>
-      <Typography variant="h5" textAlign="center" sx={{my: 5}}>
+      <Typography variant="h5">
         Simple deterministic encryption by combining caesar cipher with password
       </Typography>
-      <Typography variant="body1" textAlign="center" sx={{my: 5}}>
-        This is a web UI, you can see source code and understand how it work here: <a href="https://gist.github.com/luatnd/1adec00e1c5086ff6767ae681be20c47">
-        mxn0 encrypt with password
-      </a>
-      </Typography>
+      {/*<Typography variant="body1" sx={{my: 1}}>*/}
+      {/*  Source Code: <a href="https://gist.github.com/luatnd/1adec00e1c5086ff6767ae681be20c47">*/}
+      {/*  mxn0 encrypt with password*/}
+      {/*</a>*/}
+      {/*</Typography>*/}
+      <GitHubButton
+        href="https://github.com/luatnd/caesar-with-password"
+        data-color-scheme="no-preference: light; light: light; dark: dark;" data-size="large" data-show-count="true" aria-label="luatnd/caesar-with-password on GitHub"
+      >Caesar-with-password</GitHubButton>
 
-      <Paper elevation={1} sx={{p: 3, my: 5}}>
-        <div>
-          <TextField
-            label="Password" fullWidth
-            value={pw} onChange={e => setPw(e.target.value)}
-          />
-          <Typography variant="caption" textAlign="center" sx={{my: 5}}>
-            Program will encrypt only the supported characters, the other remain plaintexts.
-          </Typography>
+      <Playground/>
 
-          <TextField
-            label="Supported chars"
-            value={supportedChars} onChange={e => setSupportedChars(e.target.value)}
-            fullWidth
-            sx={{mt: 2}}
-          />
-          <Typography variant="caption" textAlign="center" sx={{my: 5}}>
-            Program will encrypt only the supported characters, the other remain plaintexts.
-          </Typography>
-        </div>
+      <Paper sx={{p: 3, my: 5}}>
+        <Typography variant="h5" id="how-it-work">
+          How it work
+        </Typography>
 
-        <Box sx={{mt: 5}}>
-          <TextField
-            id="outlined-multiline-static"
-            label="Plaintext"
-            multiline
-            rows={4}
-            value={plainText} onChange={e => {
-              setPlainText(e.target.value)
-              setPlainTextLastEdited(Date.now())
-            }}
-            error={!!plainTextErr}
-            helperText={plainTextErr}
-            sx={{width: '43%'}}
-          />
-          <div style={{width: '14%', display: "inline-block", textAlign: "center"}}>
-            <IconButton color="secondary" aria-label="add an alarm">
-              <SwapHorizOutlinedIcon />
-            </IconButton>
-          </div>
-          <TextField
-            id="outlined-multiline-static"
-            label="Encrypted"
-            multiline
-            rows={4}
-            value={encrypted} onChange={e => {
-              setEncrypted(e.target.value)
-              setEncryptedLastEdited(Date.now())
-            }}
-            error={!!encryptedErr}
-            helperText={encryptedErr}
-            sx={{width: '43%'}}
-          />
-        </Box>
-        <Typography variant="caption" textAlign="center" sx={{my: 5}}>
-          Type or paste Plaintext/Encrypted to encrypt/decrypt between them
+        <Typography variant="body1" sx={{mt:1}}>
+          <b>Word by word:</b><br/>
+        </Typography>
+        <pre style={{overflowX: 'auto'}}>{`.
+supported characters = 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+#-- shift sequences base on password ----
+password      = Go4
+base64(pass)  = R280
+
+                    0         1         2         3
+                    01234567890123456789012345678901234567890123456789012345678901
+supported_chars   = 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+                    x x     x                  x
+Caesar shifts seq = R280 ==> [27, 2, 8, 0]
+
+#-- caesar with shift sequences
+plaintext     = lorem ipsum dol
+base64(words) = bG9yZW0= aXBzdW0= ZG9s
+
+#-- Encode the word "lorem":
+                      0         1         2         3         4         5         6
+supported_chars idx:  01234567890123456789012345678901234567890123456789012345678901
+supported_chars     = 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+base64(word)        = b  G 9 y Z  W 0 =
+Caesar shifts seq   = 27 2 8 0 27 2 8 0
+caesar(word)        = 2  I H y 0  Y 8 =
+result = encrypted  = 2IHy0Y8=
+
+same for word: ipsum
+result = 1ZJz4Y8=
+same for word: dol
+result = 0IHs
+
+final result = 2IHy0Y8= 1ZJz4Y8= 0IHs
+        `}</pre>
+
+        <Typography variant="body1" sx={{mt:1}}>
+          <b>Whole string:</b><br/>
+        </Typography>
+        <pre style={{overflowX: 'auto'}}>{`---
+supported characters = 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+#-- shift sequences base on password ----
+password      = Go4
+base64(pass)  = R280
+
+                    0         1         2         3
+                    01234567890123456789012345678901234567890123456789012345678901
+supported_chars   = 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+                    x x     x                  x
+Caesar shifts seq  = R280 ==> [27, 2, 8, 0]
+
+#-- caesar with shift sequences, encode entire string
+plaintext     = lorem ipsum dolor 
+base64(text)  = bG9yZW0gaXBzdW0gZG9sb3I=
+
+                      0         1         2         3         4         5         6
+supported_chars idx:  01234567890123456789012345678901234567890123456789012345678901
+supported_chars     = 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz
+base64(text)        = b  G 9 y Z  W 0 g a  X B z d  W 0 g Z  G 9 s b  3 I =
+Caesar shifts seq   = 27 2 8 0 27 2 8 0 27 2 8 0 27 2 8 0 27 2 8 0 27 2 8 0
+caesar(string)      = 2  I H y 0  Y 8 g 1  Z J z 4  Y 8 g 0  I H s 2  5 Q =
+result = encrypted  = 2IHy0Y8g1ZJz4Y8g0IHs25Q=
+        `}</pre>
+
+        <Typography variant="body1" sx={{mt:1}}>
+          <b>Common rules:</b><br/>
+          - Caesar only shift the character inside supported_chars<br/>
+          - non-supported_chars will be ignored, have shift=0
+        </Typography>
+      </Paper>
+
+
+      <Paper sx={{p: 3, my: 5}}>
+        <Typography variant="h5" id="how-it-work">
+          Why using this:
+        </Typography>
+        <Typography variant="body1" sx={{mt:1}}>
+          - It's simple and can be encoded/decoded with your pen and paper, so you don't need to remember the web page / online tool you used to encode/decode<br/>
+          - Large entropy because of using your password, no one can decode it except you
+        </Typography>
+        <Typography variant="body1" sx={{mt:1}}>
+          NOTE1: "Word by word" encryption can be decrypted by AI bruteforce or smart people.<br/>
+          NOTE2: If you need more secure encryption, plz use another method or software.
         </Typography>
       </Paper>
     </>

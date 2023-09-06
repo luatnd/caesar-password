@@ -30,6 +30,7 @@
     "react-addons-shallow-compare": "^15.6.3",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "18.2.0",
+    "react-github-btn": "^1.4.0",
     "throttle-debounce": "^5.0.0"
   },
   "devDependencies": {
