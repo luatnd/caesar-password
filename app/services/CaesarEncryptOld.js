@@ -1,3 +1,5 @@
+
+
 /**
  * Encrypt each word by this algo
  */
@@ -44,30 +46,15 @@ export function decrypt_words(all_decrypted_string, password, supported_chars = 
   return plains.join(' ')
 }
 
-export function encrypt_string(plaintext, password, supported_chars = "") {
-  return pass_encrypt(plaintext, password, supported_chars)
-}
-export function decrypt_string(encrypted_text, password, supported_chars = "") {
-  return pass_decrypt(encrypted_text, password, supported_chars)
-}
-
 // only supported_chars was encrypted
 export function pass_encrypt(plain_text, password, chars) {
-  console.log('{pass_encrypt} plain_text, password: ', plain_text, password);
-  const normalized = base64_encode(plain_text)
-  const pw_normalized = base64_encode(password)
-  console.log('{pass_encrypt} normalized, pw_normalized: ', normalized, pw_normalized);
-  return caesar_cypher_with_password(normalized, pw_normalized, false, chars)
+  return base64_encode(caesar_cypher_with_password(plain_text, password, false, chars))
 }
 export function pass_decrypt(encrypted_text, password, chars) {
-  console.log('{pass_encrypt} plain_text, password: ', encrypted_text, password);
-  const decrypted = caesar_cypher_with_password(encrypted_text, base64_encode(password), true, chars)
-  const pw_normalized = base64_encode(password)
-  console.log('{pass_encrypt} decrypted, pw_normalized: ', decrypted, pw_normalized);
-  return base64_decode(decrypted)
+  return caesar_cypher_with_password(base64_decode(encrypted_text), password, true, chars)
 }
 
-export function caesar_cypher_with_password(plain_text, password, decoding = false, supported_chars = '') {
+function caesar_cypher_with_password(plain_text, password, decoding = false, supported_chars = '') {
   if (!supported_chars) {
     supported_chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
   }
@@ -97,7 +84,6 @@ export function caesar_cypher_with_password(plain_text, password, decoding = fal
   * In case of single shift: shifts = [shift_value]
   */
   function caesar_cypher_with_shifts(plain_text, shifts) {
-    console.log('{caesar_cypher_with_shifts} plain_text, shifts: ', plain_text, shifts);
     let encoded = '';
     if (!shifts.length) shifts.push(0); // no password mean not shifting
 
@@ -111,8 +97,6 @@ export function caesar_cypher_with_password(plain_text, password, decoding = fal
         encoded += char;
       }
     }
-
-    console.log('{caesar_cypher_with_shifts} encoded: ', encoded);
 
     return encoded;
   }
