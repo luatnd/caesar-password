@@ -75,13 +75,16 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
-      - name: Static HTML export with Next.js
-        run: ${{ steps.detect-package-manager.outputs.runner }} next export
+
+        # As next 13.4 don't need to export command anymore
+#      - name: Static HTML export with Next.js
+#        run: ${{ steps.detect-package-manager.outputs.runner }} next export
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
           path: ./out
-  
+
   # TODO: Add CI workflow
 
   # Deployment job
