@@ -7,7 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import SwapHorizOutlinedIcon from '@mui/icons-material/SwapHorizOutlined';
 import Paper from "@mui/material/Paper";
 import {useEffect, useState} from "react";
-import {encrypt_words, decrypt_words} from "@/services/CaesarEncrypt"
+import {encrypt_words, decrypt_words, encrypt_string, decrypt_string} from "@/services/CaesarEncrypt"
 import {Stack, Switch} from "@mui/material";
 
 export default function Playground() {
@@ -27,7 +27,10 @@ export default function Playground() {
 
     if (encrypting) {
       try {
-        setEncrypted(encrypt_words(plainText, pw, supportedChars))
+        const s = wholeString
+          ? encrypt_string(plainText, pw, supportedChars)
+          : encrypt_words(plainText, pw, supportedChars)
+        setEncrypted(s)
         setPlainTextErr("")
       } catch (e) {
         console.error('{decrypt} e: ', e);
@@ -35,14 +38,17 @@ export default function Playground() {
       }
     } else {
       try {
-        setPlainText(decrypt_words(encrypted, pw, supportedChars))
+        const s = wholeString
+          ? decrypt_string(encrypted, pw, supportedChars)
+          : decrypt_words(encrypted, pw, supportedChars)
+        setPlainText(s)
         setEncryptedErr("")
       } catch (e) {
         console.error('{decrypt} e: ', e);
         setEncryptedErr("Invalid input")
       }
     }
-  }, [pw, supportedChars, plainTextLastEdited, encryptedLastEdited, plainText, encrypted])
+  }, [pw, supportedChars, wholeString, plainTextLastEdited, encryptedLastEdited, plainText, encrypted])
 
   return (
     <Paper elevation={1} sx={{p: 3, my: 5}}>
@@ -90,7 +96,7 @@ export default function Playground() {
           id="outlined-multiline-static"
           label="Plaintext"
           multiline
-          rows={4}
+          rows={6}
           value={plainText} onChange={e => {
           setPlainText(e.target.value)
           setPlainTextLastEdited(Date.now())
@@ -108,7 +114,7 @@ export default function Playground() {
           id="outlined-multiline-static"
           label="Encrypted"
           multiline
-          rows={4}
+          rows={6}
           value={encrypted} onChange={e => {
           setEncrypted(e.target.value)
           setEncryptedLastEdited(Date.now())
