@@ -17,8 +17,8 @@ export function encrypt_words(all_word_string, password, supported_chars = "") {
     }
 
     encrypts.push(encrypted)
-    const fn = plain === decrypted ? console.info : console.error;
-    fn(`"${plain}", "${encrypted}", "${decrypted}"`)
+    // const fn = plain === decrypted ? console.info : console.error;
+    // fn(`"${plain}", "${encrypted}", "${decrypted}"`)
   })
   return encrypts.join(' ')
 }
