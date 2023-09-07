@@ -4,7 +4,6 @@ import '@testing-library/jest-dom'
 import mockRouter from 'next-router-mock';
 
 import Auth from './page'
-import App from "../page";
 
 jest.mock('next/router', () => require('next-router-mock'));
 jest.mock('next/navigation', () => require('next-router-mock'));

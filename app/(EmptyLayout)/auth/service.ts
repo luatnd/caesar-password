@@ -142,6 +142,7 @@ class AuthCache {
   static set(auth: Auth | undefined) {
     if (typeof localStorage === 'undefined') return
     console.log('{set} localStorage: ', localStorage);
+    console.log('{set} localStorage.setItem: ', localStorage.setItem);
 
     // TODO: encrypt data
     localStorage.setItem(AuthCache.KEY, JSON.stringify(auth));

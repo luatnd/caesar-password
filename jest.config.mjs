@@ -16,7 +16,10 @@ const config = {
     '^dexie$': "<rootDir>/node_modules/dexie",
     "^@/(.*)$": "<rootDir>/app/$1",
   },
+  // https://www.npmjs.com/package/jest-localstorage-mock
+  "resetMocks": false,
   "setupFiles": [
+    "jest-localstorage-mock",
     "fake-indexeddb/auto", // shim indexeddb to test with Dexie
   ]
 };
