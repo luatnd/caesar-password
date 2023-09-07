@@ -29,6 +29,23 @@ yarn build
 yarn start
 ```
 
+# CI-CD
+```mermaid
+---
+title: CI/CD for this app
+---
+graph TD
+    NewFeature("fa:fa-code-merge feature/a: Checkout from main")
+    --> Pull(fa:fa-code-merge Create Pull request)
+    --> Linter(fa:fa-bug Linter)
+    --> UnitTest(fa:fa-bug Unit test)
+    --> TestCoverage(fa:fa-bug Check code coverage)
+    --> CodeReview(fa:fa-code Human code review and validation)
+    --> Merge(fa:fa-code-merge User merge pull request to main)
+    --> Build("fa:fa-gears Build static web")
+    --> Deplop(fa:fa-rocket Deploy to github page)
+```
+
 # Component structure
 This project use default NextJs structure.
 
@@ -36,15 +53,15 @@ And some custom structure:
 ```
 app
 |— components
-	 |— MyCom
-		  |- index.tsx    // (or comp name) is the presentation view layer
-		  |- model.ts     // DTO layer: DTO or types, we often import this from GraphQL codegen
-		  |- service.ts   // biz layer: biz logic and hooks
-		  |- dao.ts       // DAO layer (data fetching layer): fetch data from REST, socket, localstorage, ...
-		  |- store.ts     // for sharing state with other components
-		  |- components   // sub components: for internal use only
-		  |- other-utils.ts // sth else
-   |— MyOtherComponent.tsx      // Another simple component
+   |— MyCom
+      |- index.tsx    // (or comp name) is the presentation view layer
+      |- model.ts     // DTO layer: DTO or types, we often import this from GraphQL codegen
+      |- service.ts   // biz layer: biz logic and hooks
+      |- dao.ts       // DAO layer (data fetching layer): fetch data from REST, socket, localstorage, ...
+      |- store.ts     // for sharing state with other components
+      |- components   // sub components: for internal use only
+      |- other-utils.ts // sth else
+      |— MyOtherComponent.tsx      // Another simple component
 |— services           // app-wide services
 |— utils              // app-wide utils
 ```

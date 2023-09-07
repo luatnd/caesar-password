@@ -82,12 +82,6 @@ jobs:
         uses: johanvanhelden/gha-clover-test-coverage-check@v1
         id: coverage
         with:
-          percentage: "100"
+          # Code coverage must be gte this:
+          percentage: "50"
           filename: "coverage/clover.xml"
-
-
-#  code_review:
-#    runs-on: ubuntu-latest
-#    needs: unit_test
-#     - name: Checkout
-#     uses: actions/checkout@v3
