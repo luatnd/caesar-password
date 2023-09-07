@@ -1,3 +1,9 @@
+# Caesar with password
+Live: https://luatnd.github.io/caesar-password/
+
+Simple deterministic encryption by combining caesar cipher with password
+
+
 # About
 Note: This project use new `app` directory structure of NextJs 13 instead of `pages` as in the older versions.
 In this new `app` dir structure, each path to `page.tsx` is a valid route.
