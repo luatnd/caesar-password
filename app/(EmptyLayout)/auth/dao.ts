@@ -65,7 +65,7 @@ class LocalDataSourceAdapter implements DataSourceAdapter {
   async createUser(email: string, pw: string): Promise<User | undefined> {
     const u = {email, password: pw}
     const id = await this.db.users.add(u)
-    console.log('{createUser} user: ', u);
+    // console.log('{createUser} user: ', u);
     // @ts-ignore
     u.id = id;
     // @ts-ignore

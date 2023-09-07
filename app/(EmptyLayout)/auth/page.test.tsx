@@ -9,6 +9,20 @@ jest.mock('next/router', () => require('next-router-mock'));
 jest.mock('next/navigation', () => require('next-router-mock'));
 
 describe("Auth", () => {
+  beforeEach(() => {
+    // Mock sessionStorage here 👇
+    // Only this config can fix the problem, the other is just trying without result
+    // TypeError: Cannot read property '_origin' of null
+    //     at Window.get sessionStorage [as localStorage]
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: jest.fn(() => null),
+        setItem: jest.fn(() => null),
+        removeItem: jest.fn(() => null),
+      },
+      writable: true,
+    });
+  });
 
   test('can input form', async () => {
     await mockRouter.push("/auth");
