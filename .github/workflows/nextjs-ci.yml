@@ -75,6 +75,9 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
         # if: steps.cache-nodemodules.outputs.cache-hit != 'true'
 
+      - name: Lint and type check
+        run: ${{ steps.detect-package-manager.outputs.manager }} push-check
+
       - name: Unit test
         run: ${{ steps.detect-package-manager.outputs.manager }} test --coverage
 
