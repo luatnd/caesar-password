@@ -86,9 +86,6 @@ jobs:
           filename: "coverage/clover.xml"
 
 
-  # TODO: Add CI workflow
-  # - human code review
-  # - after all is oke then continue the process
 #  code_review:
 #    runs-on: ubuntu-latest
 #    needs: unit_test
