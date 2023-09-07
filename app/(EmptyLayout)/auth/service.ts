@@ -140,13 +140,15 @@ for avoiding redundant re-login requests
 class AuthCache {
   private static KEY: string = 'AuthCache';
   static set(auth: Auth | undefined) {
-    if (typeof localStorage === 'undefined') return
+    if (!localStorageSupported()) return;
+
     // TODO: encrypt data
     localStorage.setItem(AuthCache.KEY, JSON.stringify(auth));
   }
 
   static get(): Auth | undefined {
-    if (typeof localStorage === 'undefined') return
+    if (!localStorageSupported()) return;
+
     let d = localStorage.getItem(AuthCache.KEY);
     try {
       return JSON.parse(d ?? "")
@@ -158,4 +160,14 @@ class AuthCache {
   static clean() {
     AuthCache.set(undefined)
   }
+}
+
+function localStorageSupported(): boolean {
+  if (typeof localStorage === 'undefined') return false
+  if (localStorage.getItem("t")) return false
+
+  // console.log('{set} localStorage: ', window.localStorage);
+  // console.log('{set} localStorage.setItem: ', window.localStorage.setItem);
+
+  return true
 }

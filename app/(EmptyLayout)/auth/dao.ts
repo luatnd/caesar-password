@@ -15,6 +15,8 @@ interface DataSourceAdapter {
 }
 
 export class AuthDAO {
+  // actually this would be a strategy, but each strategy here will use an Adapter
+  // So we use adapter directly for short
   private adapter: DataSourceAdapter;
 
   constructor(dataSource: AuthDataSource) {
@@ -63,7 +65,7 @@ class LocalDataSourceAdapter implements DataSourceAdapter {
   async createUser(email: string, pw: string): Promise<User | undefined> {
     const u = {email, password: pw}
     const id = await this.db.users.add(u)
-    console.log('{createUser} user: ', u);
+    // console.log('{createUser} user: ', u);
     // @ts-ignore
     u.id = id;
     // @ts-ignore
