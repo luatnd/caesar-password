@@ -15,6 +15,8 @@ interface DataSourceAdapter {
 }
 
 export class AuthDAO {
+  // actually this would be a strategy, but each strategy here will use an Adapter
+  // So we use adapter directly for short
   private adapter: DataSourceAdapter;
 
   constructor(dataSource: AuthDataSource) {
