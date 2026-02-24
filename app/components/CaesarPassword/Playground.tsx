@@ -6,13 +6,16 @@ import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import SwapHorizOutlinedIcon from '@mui/icons-material/SwapHorizOutlined';
 import Paper from "@mui/material/Paper";
-import {useEffect, useState} from "react";
-import {encrypt_words, decrypt_words, encrypt_string, decrypt_string} from "@/services/CaesarEncrypt"
-import {Stack, Switch} from "@mui/material";
+import { useEffect, useState } from "react";
+import { encrypt_words, decrypt_words, encrypt_string, decrypt_string } from "@/services/CaesarEncrypt"
+import { Stack, Switch, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from "@mui/material";
 
 export default function Playground() {
   const [pw, setPw] = useState("");
-  const [supportedChars, setSupportedChars] = useState("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+  const defaultAlphaNumeric = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  const [charMode, setCharMode] = useState("alphanumeric");
+  const [customChars, setCustomChars] = useState("");
+  const [supportedChars, setSupportedChars] = useState(defaultAlphaNumeric);
   const [wholeString, setWholeString] = useState(true);
   const [plainText, setPlainText] = useState("");
   const [encrypted, setEncrypted] = useState("");
@@ -20,6 +23,19 @@ export default function Playground() {
   const [encryptedLastEdited, setEncryptedLastEdited] = useState(0);
   const [plainTextErr, setPlainTextErr] = useState("");
   const [encryptedErr, setEncryptedErr] = useState("");
+
+  // get encrypted text from url
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const eParam = new URLSearchParams(window.location.search).get("e");
+      if (eParam) {
+        // Base64 ' ' converts to '+' because '+' in URL params is often decoded to a space
+        const base64Encrypted = eParam.replace(/ /g, "+");
+        setEncrypted(base64Encrypted);
+        setEncryptedLastEdited(Date.now());
+      }
+    }
+  }, []);
 
   // refresh form
   useEffect(() => {
@@ -51,30 +67,57 @@ export default function Playground() {
   }, [pw, supportedChars, wholeString, plainTextLastEdited, encryptedLastEdited, plainText, encrypted])
 
   return (
-    <Paper elevation={1} sx={{p: 3, my: 5}}>
+    <Paper elevation={1} sx={{ p: 3, my: 5 }}>
       <Typography variant="h5">
         Playground
       </Typography>
       <div>
         <TextField
-          label="Password" fullWidth sx={{mt: 3}}
+          label="Password" fullWidth sx={{ mt: 3 }}
           value={pw} onChange={e => setPw(e.target.value)}
+          type="password"
         />
         <Typography variant="caption">
           Program will encrypt only the supported characters, the other remain plaintexts.
         </Typography>
 
+        <FormControl sx={{ mt: 3, width: '100%' }}>
+          <FormLabel id="supported-chars-group-label" sx={{ fontSize: '0.8rem' }}>Supported chars</FormLabel>
+          <RadioGroup
+            row
+            aria-labelledby="supported-chars-group-label"
+            name="supported-chars-group"
+            value={charMode}
+            onChange={(e: any) => {
+              const mode = e.target.value;
+              setCharMode(mode);
+              if (mode === "alphanumeric") {
+                setSupportedChars(defaultAlphaNumeric);
+              } else {
+                setSupportedChars(customChars);
+              }
+            }}
+          >
+            <FormControlLabel value="alphanumeric" control={<Radio size="small" />} label="Default AlphaNumeric" />
+            <FormControlLabel value="custom" control={<Radio size="small" />} label="Custom" />
+          </RadioGroup>
+        </FormControl>
         <TextField
           label="Supported chars"
-          value={supportedChars} onChange={e => setSupportedChars(e.target.value)}
+          value={charMode === "alphanumeric" ? defaultAlphaNumeric : customChars}
+          onChange={(e: any) => {
+            setCharMode("custom");
+            setCustomChars(e.target.value);
+            setSupportedChars(e.target.value);
+          }}
           fullWidth
-          sx={{mt: 3}}
+          sx={{ mt: 1 }}
         />
-        <Typography variant="caption">
-          Program will encrypt only the supported characters, the other remain plaintexts.
+        <Typography variant="caption" sx={{ display: 'block' }} color="warning">
+          ⚠️ Program will encrypt only the supported characters, the other remain plaintexts.
         </Typography>
 
-        <Stack direction="row" spacing={1} alignItems="center" sx={{mt: 2}}>
+        <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 2 }}>
           <Typography>Word by word</Typography>
           <Switch
             checked={wholeString}
@@ -91,21 +134,21 @@ export default function Playground() {
         </Typography>}
       </div>
 
-      <Box sx={{mt: 5}}>
+      <Box sx={{ mt: 5 }}>
         <TextField
           id="outlined-multiline-static"
           label="Plaintext"
           multiline
           rows={6}
           value={plainText} onChange={e => {
-          setPlainText(e.target.value)
-          setPlainTextLastEdited(Date.now())
-        }}
+            setPlainText(e.target.value)
+            setPlainTextLastEdited(Date.now())
+          }}
           error={!!plainTextErr}
           helperText={plainTextErr}
-          sx={{width: '43%'}}
+          sx={{ width: '43%' }}
         />
-        <div style={{width: '14%', display: "inline-block", textAlign: "center"}}>
+        <div style={{ width: '14%', display: "inline-block", textAlign: "center" }}>
           <IconButton color="primary" aria-label="add an alarm">
             <SwapHorizOutlinedIcon />
           </IconButton>
@@ -116,15 +159,15 @@ export default function Playground() {
           multiline
           rows={6}
           value={encrypted} onChange={e => {
-          setEncrypted(e.target.value)
-          setEncryptedLastEdited(Date.now())
-        }}
+            setEncrypted(e.target.value)
+            setEncryptedLastEdited(Date.now())
+          }}
           error={!!encryptedErr}
           helperText={encryptedErr}
-          sx={{width: '43%'}}
+          sx={{ width: '43%' }}
         />
       </Box>
-      <Typography variant="caption" textAlign="center" sx={{my: 5}}>
+      <Typography variant="caption" textAlign="center" sx={{ my: 5 }}>
         Type or paste Plaintext/Encrypted to encrypt/decrypt between them
       </Typography>
     </Paper>
